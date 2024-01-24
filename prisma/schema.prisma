@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  groups Group[]
+
+  @@map("departments")
+}
+
+model Group {
+  id           String      @id @default(uuid())
+  name         String      @unique
+  Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId String?
+  subjects     String[]
+
+  @@map("groups")
+}
+
+model Subject {
+  id   String @id @default(uuid())
+  name String @unique
+
+  @@map("subjects")
+}
