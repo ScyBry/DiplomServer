@@ -28,7 +28,7 @@ export class DepartmentService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const department = await this.prisma.department.findUnique({
       where: { id },
       include: { groups: true },
@@ -39,7 +39,7 @@ export class DepartmentService {
     return department;
   }
 
-  async update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
+  async update(id: string, updateDepartmentDto: UpdateDepartmentDto) {
     const existingDepartment = await this.prisma.department.findUnique({
       where: { id },
     });
@@ -53,7 +53,7 @@ export class DepartmentService {
     });
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     const existingDepartment = await this.prisma.department.findUnique({
       where: { id },
     });

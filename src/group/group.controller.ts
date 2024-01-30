@@ -27,16 +27,16 @@ export class GroupController {
 
   @Patch('updateGroup')
   update(@Query('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
-    return this.groupService.update(+id, updateGroupDto);
+    return this.groupService.update(id, updateGroupDto);
   }
 
   @Delete('deleteGroup')
   deleteGroup(@Query('id') id: string) {
-    return this.groupService.remove(+id);
+    return this.groupService.remove(id);
   }
 
   @Get('findOneGroup')
   findOneGroup(@Query('id') id: string) {
-    return this.groupService.findOne(+id);
+    return this.groupService.findOne(id);
   }
 }

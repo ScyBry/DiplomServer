@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,9 +8,10 @@ datasource db {
 }
 
 model Department {
-  id     String  @id @default(uuid())
-  name   String  @unique
-  groups Group[]
+  id       String    @id @default(uuid())
+  name     String    @unique
+  groups   Group[]
+  subjects Subject[]
 
   @@map("departments")
 }
@@ -23,14 +21,19 @@ model Group {
   name         String      @unique
   Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
-  subjects     String[]
+  Subject      Subject?    @relation(fields: [subjectId], references: [id])
+  subjectId    String?
 
   @@map("groups")
 }
 
 model Subject {
-  id   String @id @default(uuid())
-  name String @unique
+  id           String      @id @default(uuid())
+  name         String      @unique
+  groups       Group[]
+  groupId      String?
+  Department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
 
   @@map("subjects")
 }

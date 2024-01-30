@@ -29,7 +29,7 @@ export class DepartmentController {
 
   @Get('getDepartmentById')
   getDepartmentById(@Query('id') id: string) {
-    return this.departmentService.findOne(+id);
+    return this.departmentService.findOne(id);
   }
 
   @Patch('updateDepartment')
@@ -37,11 +37,11 @@ export class DepartmentController {
     @Query('id') id: string,
     @Body() updateDepartmentDto: UpdateDepartmentDto,
   ) {
-    return this.departmentService.update(+id, updateDepartmentDto);
+    return this.departmentService.update(id, updateDepartmentDto);
   }
 
   @Delete('deleteDepartment')
   deleteDepartment(@Query('id') id: string) {
-    return this.departmentService.delete(+id);
+    return this.departmentService.delete(id);
   }
 }

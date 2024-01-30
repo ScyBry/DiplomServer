@@ -38,12 +38,12 @@ export class GroupService {
     return this.prisma.group.findMany();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const group = await this.prisma.group.findUnique({ where: { id } });
     return group;
   }
 
-  async update(id: number, updateGroupDto: UpdateGroupDto) {
+  async update(id: string, updateGroupDto: UpdateGroupDto) {
     const group = await this.prisma.group.findUnique({ where: { id } });
 
     if (!group) throw new NotFoundException('Группа не найдена');
@@ -54,7 +54,7 @@ export class GroupService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const group = await this.prisma.group.findUnique({ where: { id } });
 
     if (!group) throw new NotFoundException('Группа не найдена');
