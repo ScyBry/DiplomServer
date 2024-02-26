@@ -12,8 +12,35 @@ model Department {
   name     String    @unique
   groups   Group[]
   subjects Subject[]
+  Teacher  Teacher[]
 
   @@map("departments")
+}
+
+model Teacher {
+  id           String      @id @default(uuid())
+  firstName    String
+  lastName     String
+  surname      String
+  totalHours   Int
+  department   Department? @relation(fields: [departmentId], references: [id])
+  departmentId String?
+  Subject      Subject?    @relation(fields: [subjectId], references: [id])
+  subjectId    String?
+
+  @@map("teachers")
+}
+
+model Subject {
+  id            String      @unique @default(uuid())
+  name          String      @unique
+  groups        Group[]
+  hoursPerGroup Int
+  Department    Department? @relation(fields: [departmentId], references: [id])
+  departmentId  String?
+  teachers      Teacher[]
+
+  @@map("subjects")
 }
 
 model Group {
@@ -25,15 +52,4 @@ model Group {
   subjectId    String?
 
   @@map("groups")
-}
-
-model Subject {
-  id           String      @id @default(uuid())
-  name         String      @unique
-  groups       Group[]
-  groupId      String?
-  Department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId String?
-
-  @@map("subjects")
 }

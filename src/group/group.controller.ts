@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
+  Controller,
   Delete,
+  Get,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { GroupService } from './group.service';
 
 @Controller('group')
 export class GroupController {

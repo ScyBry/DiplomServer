@@ -23,7 +23,7 @@ export class GroupService {
       where: { name: createGroupDto.name },
     });
 
-    if (!existingDepartment)
+    if (existingGroup)
       throw new ConflictException('Группа с таким названием уже существует');
 
     return this.prisma.group.create({

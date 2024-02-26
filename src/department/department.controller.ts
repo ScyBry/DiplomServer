@@ -23,8 +23,8 @@ export class DepartmentController {
   }
 
   @Get('getAllDepartments')
-  getAllDepartments() {
-    return this.departmentService.getAll();
+  getAllDepartments(@Query('withGroups') withGroups: boolean) {
+    return this.departmentService.getAll(withGroups);
   }
 
   @Get('getDepartmentById')

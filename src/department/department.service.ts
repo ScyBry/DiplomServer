@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  
 } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -22,10 +23,13 @@ export class DepartmentService {
     return this.prisma.department.create({ data: { ...createDepartmentDto } });
   }
 
-  async getAll() {
-    return this.prisma.department.findMany({
-      include: { groups: true },
-    });
+  async getAll(withGroups: boolean) {
+    if (withGroups)
+      return this.prisma.department.findMany({
+        include: { groups: true },
+      });
+
+    return this.prisma.department.findMany();
   }
 
   async findOne(id: string) {
