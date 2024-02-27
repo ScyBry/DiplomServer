@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GroupService {
@@ -38,9 +38,14 @@ export class GroupService {
     return this.prisma.group.findMany();
   }
 
-  async findOne(id: string) {
-    const group = await this.prisma.group.findUnique({ where: { id } });
-    return group;
+  async findOne(id: string, withSubjects: boolean) {
+    if (withSubjects)
+      return this.prisma.group.findUnique({
+        where: { id },
+        include: { subjects: true },
+      });
+
+    return this.prisma.group.findUnique({ where: { id } });
   }
 
   async update(id: string, updateGroupDto: UpdateGroupDto) {

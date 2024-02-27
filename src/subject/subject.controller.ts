@@ -6,7 +6,7 @@ import { SubjectService } from './subject.service';
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
-  @Post()
+  @Post('createSubject')
   create(@Body() createSubjectDto: CreateSubjectDto) {
     return this.subjectService.create(createSubjectDto);
   }

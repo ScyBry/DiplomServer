@@ -34,11 +34,13 @@ model Teacher {
 model Subject {
   id            String      @unique @default(uuid())
   name          String      @unique
-  groups        Group[]
   hoursPerGroup Int
   Department    Department? @relation(fields: [departmentId], references: [id])
   departmentId  String?
-  teachers      Teacher[]
+
+  teachers Teacher[]
+  Group    Group?    @relation(fields: [groupId], references: [id])
+  groupId  String?
 
   @@map("subjects")
 }
@@ -48,8 +50,7 @@ model Group {
   name         String      @unique
   Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
-  Subject      Subject?    @relation(fields: [subjectId], references: [id])
-  subjectId    String?
+  subjects     Subject[]
 
   @@map("groups")
 }

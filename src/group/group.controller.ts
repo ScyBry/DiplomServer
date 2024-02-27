@@ -36,7 +36,10 @@ export class GroupController {
   }
 
   @Get('findOneGroup')
-  findOneGroup(@Query('id') id: string) {
-    return this.groupService.findOne(id);
+  findOneGroup(
+    @Query('id') id: string,
+    @Query('withSubjects') withSubjects?: boolean,
+  ) {
+    return this.groupService.findOne(id, withSubjects);
   }
 }

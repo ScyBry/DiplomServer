@@ -2,10 +2,9 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  
 } from '@nestjs/common';
-import { CreateDepartmentDto } from './dto/create-department.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 
 @Injectable()
