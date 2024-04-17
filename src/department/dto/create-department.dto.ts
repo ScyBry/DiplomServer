@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateDepartmentDto {
   @IsString({ message: 'Название отделения должно быть строкой' })

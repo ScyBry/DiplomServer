@@ -7,42 +7,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String @id @default(uuid())
+  username String @unique
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isBlocked Boolean  @default(false) @map("is_blocked")
+
+  @@map("users")
+}
+
 model Department {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  groups   Group[]
-  subjects Subject[]
-  Teacher  Teacher[]
+  id     String  @id @default(uuid())
+  name   String  @unique
+  groups Group[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("departments")
 }
 
 model Teacher {
-  id           String      @id @default(uuid())
-  firstName    String
-  lastName     String
-  surname      String
-  totalHours   Int
-  department   Department? @relation(fields: [departmentId], references: [id])
-  departmentId String?
-  Subject      Subject?    @relation(fields: [subjectId], references: [id])
-  subjectId    String?
+  id         String @id @default(uuid())
+  firstName  String
+  lastName   String
+  surname    String
+  totalHours Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("teachers")
+  subjects TeacherSubject[] @relation(name: "TeacherSubjectRelation")
 }
 
 model Subject {
-  id            String      @unique @default(uuid())
-  name          String      @unique
+  id            String @unique @default(uuid())
+  name          String @unique
   hoursPerGroup Int
-  Department    Department? @relation(fields: [departmentId], references: [id])
-  departmentId  String?
 
-  teachers Teacher[]
-  Group    Group?    @relation(fields: [groupId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teachers TeacherSubject[] @relation(name: "TeacherSubjectRelation")
+  Group    Group?           @relation(fields: [groupId], references: [id])
   groupId  String?
+}
 
-  @@map("subjects")
+model TeacherSubject {
+  teacher   Teacher @relation(fields: [teacherId], references: [id], name: "TeacherSubjectRelation")
+  teacherId String
+  subject   Subject @relation(fields: [subjectId], references: [id], name: "TeacherSubjectRelation")
+  subjectId String
+
+  @@id([teacherId, subjectId])
 }
 
 model Group {
@@ -51,6 +71,9 @@ model Group {
   Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
   subjects     Subject[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("groups")
 }

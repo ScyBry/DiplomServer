@@ -1,39 +1,77 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
+import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Injectable()
 export class SubjectService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createSubjectDto: CreateSubjectDto) {
-    const { departmentId, teachersId, ...data } = createSubjectDto;
-
-    const existingSubject = await this.prisma.subject.findUnique({
-      where: { name: data.name },
-    });
-
-    if (existingSubject)
-      throw new ConflictException('Этот предмет уже существует');
-
-    const teachers = await this.prisma.teacher.findMany({
-      where: { id: { in: teachersId } },
-    });
-
-    if (!teachers) throw new BadRequestException('Что-то пошло не так');
-
+  async createSubject(createSubjectDto: CreateSubjectDto) {
     return this.prisma.subject.create({
-      data: {
-        ...data,
-        Department: { connect: { id: departmentId } },
-        teachers: {
-          connect: teachers.map((teacher) => ({ id: teacher.id })),
-        },
+      data: createSubjectDto,
+    });
+  }
+
+  async getAllGroupSubjects(id: string) {
+    return this.prisma.subject.findMany({
+      where: {
+        groupId: id,
       },
     });
   }
+
+  async findAllSubjects() {
+    return this.prisma.subject.findMany();
+  }
+
+  async findSubjectById(id: string) {
+    return this.prisma.subject.findUnique({
+      where: { id },
+    });
+  }
+
+  async updateSubject(
+    id: string,
+    updateSubjectDto: UpdateSubjectDto,
+  ): Promise<any> {
+    return this.prisma.subject.update({
+      where: { id },
+      data: updateSubjectDto,
+    });
+  }
+
+  async deleteSubject(id: string): Promise<any> {
+    return this.prisma.subject.delete({
+      where: { id },
+    });
+  }
+
+  // async addTeacherToSubject(
+  //   subjectId: string,
+  //   teacherId: string,
+  // ): Promise<any> {
+  //   return this.prisma.subject.update({
+  //     where: { id: subjectId },
+  //     data: {
+  //       teachers: {
+  //         connect: { id: teacherId },
+  //       },
+  //     },
+  //   });
+  // }
+
+  // async removeTeacherFromSubject(
+  //   subjectId: string,
+  //   teacherId: string,
+  // ): Promise<any> {
+  //   return this.prisma.subject.update({
+  //     where: { id: subjectId },
+  //     data: {
+  //       teachers: {
+  //         disconnect: { teacherId: teacherId },
+  //       },
+  //     },
+  //   });
+  // }
 }
