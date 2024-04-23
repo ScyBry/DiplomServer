@@ -18,6 +18,7 @@ export class SubjectService {
       where: {
         groupId: id,
       },
+      include: { teachers: true },
     });
   }
 

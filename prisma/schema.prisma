@@ -32,13 +32,13 @@ model Department {
 }
 
 model Teacher {
-  id         String @id @default(uuid())
+  id         String   @id @default(uuid())
   firstName  String
   lastName   String
   surname    String
   totalHours Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   subjects TeacherSubject[] @relation(name: "TeacherSubjectRelation")
 }
@@ -51,9 +51,11 @@ model Subject {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  teachers TeacherSubject[] @relation(name: "TeacherSubjectRelation")
-  Group    Group?           @relation(fields: [groupId], references: [id])
-  groupId  String?
+  teachers      TeacherSubject[] @relation(name: "TeacherSubjectRelation")
+  Group         Group?           @relation(fields: [groupId], references: [id])
+  groupId       String?
+  DaySchedule   DaySchedule?     @relation(fields: [dayScheduleId], references: [id])
+  dayScheduleId String?
 }
 
 model TeacherSubject {
@@ -66,14 +68,27 @@ model TeacherSubject {
 }
 
 model Group {
-  id           String      @id @default(uuid())
-  name         String      @unique
-  Department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  id           String        @id @default(uuid())
+  name         String        @unique
+  Department   Department?   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
   subjects     Subject[]
+  shedules     DaySchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("groups")
+}
+
+model DaySchedule {
+  id        String    @id @default(uuid())
+  dayOfWeak String
+  subjects  Subject[]
+
+  Group   Group?  @relation(fields: [groupId], references: [id])
+  groupId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -11,7 +11,4 @@ export class CreateSubjectDto {
   @IsString({ message: 'ID группы должен быть строкой' })
   @IsNotEmpty({ message: 'ID группы не может быть пустым' })
   groupId: string;
-
-  @IsString({ each: true, message: 'ID преподавателя должен быть строкой' })
-  teachersIds: string[];
 }

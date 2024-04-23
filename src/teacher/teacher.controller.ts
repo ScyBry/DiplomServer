@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { TeacherService } from './teacher.service';
@@ -20,5 +29,10 @@ export class TeacherController {
   @Patch('updateTeacher')
   update(@Body() updateTeacherDto: UpdateTeacherDto, @Query('id') id: string) {
     return this.teacherService.updateTeacher(id, updateTeacherDto);
+  }
+
+  @Delete('deleteTeacher')
+  delete(@Query('teacherId') teacherId: string) {
+    return this.teacherService.deleteTeacher(teacherId);
   }
 }
