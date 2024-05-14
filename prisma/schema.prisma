@@ -36,6 +36,7 @@ model Teacher {
   firstName  String
   lastName   String
   surname    String
+  fullName   String
   totalHours Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -45,23 +46,23 @@ model Teacher {
 
 model Subject {
   id            String @unique @default(uuid())
-  name          String @unique
+  name          String
   hoursPerGroup Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  teachers      TeacherSubject[] @relation(name: "TeacherSubjectRelation")
-  Group         Group?           @relation(fields: [groupId], references: [id])
-  groupId       String?
-  DaySchedule   DaySchedule?     @relation(fields: [dayScheduleId], references: [id])
-  dayScheduleId String?
+  teachers        TeacherSubject[]  @relation(name: "TeacherSubjectRelation")
+  Group           Group?            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId         String?
+  dayScheduleId   String?
+  ScheduleSubject ScheduleSubject[]
 }
 
 model TeacherSubject {
-  teacher   Teacher @relation(fields: [teacherId], references: [id], name: "TeacherSubjectRelation")
+  teacher   Teacher @relation(fields: [teacherId], references: [id], name: "TeacherSubjectRelation", onDelete: Cascade)
   teacherId String
-  subject   Subject @relation(fields: [subjectId], references: [id], name: "TeacherSubjectRelation")
+  subject   Subject @relation(fields: [subjectId], references: [id], name: "TeacherSubjectRelation", onDelete: Cascade)
   subjectId String
 
   @@id([teacherId, subjectId])
@@ -73,7 +74,7 @@ model Group {
   Department   Department?   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String?
   subjects     Subject[]
-  shedules     DaySchedule[]
+  daySchedules DaySchedule[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,14 +82,20 @@ model Group {
   @@map("groups")
 }
 
+model ScheduleSubject {
+  id            String       @id @default(uuid())
+  roomNumber    String
+  orderNumber   Int
+  subject       Subject?     @relation(fields: [subjectId], references: [id])
+  subjectId     String?
+  DaySchedule   DaySchedule? @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
+  dayScheduleId String?
+}
+
 model DaySchedule {
-  id        String    @id @default(uuid())
-  dayOfWeak String
-  subjects  Subject[]
-
-  Group   Group?  @relation(fields: [groupId], references: [id])
-  groupId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String            @id @default(uuid())
+  dayOfWeek        String
+  Group            Group?            @relation(fields: [groupId], references: [id])
+  groupId          String
+  scheduleSubjects ScheduleSubject[]
 }

@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-
+  
 @Injectable()
 export class DepartmentService {
   constructor(private prisma: PrismaService) {}
@@ -25,7 +25,13 @@ export class DepartmentService {
   async getAll(withGroups: boolean) {
     if (withGroups)
       return this.prisma.department.findMany({
-        include: { groups: true },
+        include: {
+          groups: {
+            include: {
+              subjects: true,
+            },
+          },
+        },
       });
 
     return this.prisma.department.findMany();

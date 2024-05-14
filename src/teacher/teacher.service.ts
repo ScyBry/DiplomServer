@@ -30,7 +30,13 @@ export class TeacherService {
       throw new ConflictException('Преподаватель уже существует');
 
     return this.prisma.teacher.create({
-      data: createTeacherDto,
+      data: {
+        firstName: createTeacherDto.firstName,
+        lastName: createTeacherDto.lastName,
+        surname: createTeacherDto.surname,
+        totalHours: createTeacherDto.totalHours,
+        fullName: `${createTeacherDto.lastName} ${createTeacherDto.firstName} ${createTeacherDto.surname}`,
+      },
     });
   }
 
@@ -67,12 +73,29 @@ export class TeacherService {
     });
   }
 
-  async assignSubjectsToTeacher(teacherId: string, subjectsIds: string[]) {
-    return this.prisma.teacherSubject.createMany({
-      data: subjectsIds.map((subject) => ({
+  async assignSubjectsToTeacher(teacherId: string, subjectId: string) {
+    const isTeacherExists = await this.prisma.teacher.findFirst({
+      where: { id: teacherId },
+    });
+
+    const isSubjectExists = await this.prisma.subject.findFirst({
+      where: { id: subjectId },
+    });
+
+    if (!isTeacherExists || !isSubjectExists)
+      throw new NotFoundException('Преподаватель или предмет не найден');
+
+    this.prisma.teacherSubject.deleteMany({
+      where: {
+        subjectId,
+      },
+    });
+
+    return this.prisma.teacherSubject.create({
+      data: {
         teacherId,
-        subjectId: subject,
-      })),
+        subjectId,
+      },
     });
   }
 

@@ -21,7 +21,7 @@ export class SubjectController {
   }
 
   @Get('getAllGroupSubjects')
-  getAllGroupSubjects(@Query('groupId') groupId: string) {
+  getAllGroupSubjects(@Query('id') groupId: string) {
     return this.subjectService.getAllGroupSubjects(groupId);
   }
 

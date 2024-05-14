@@ -35,4 +35,12 @@ export class TeacherController {
   delete(@Query('teacherId') teacherId: string) {
     return this.teacherService.deleteTeacher(teacherId);
   }
+
+  @Post('assignSubjectsToTeacher')
+  assignSubjectToTeacher(
+    @Query('teacherId') teacherId: string,
+    @Query('subjectId') subjectId: string,
+  ) {
+    return this.teacherService.assignSubjectsToTeacher(teacherId, subjectId);
+  }
 }
