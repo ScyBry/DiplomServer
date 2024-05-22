@@ -42,6 +42,8 @@ model Teacher {
   updatedAt  DateTime @updatedAt
 
   subjects TeacherSubject[] @relation(name: "TeacherSubjectRelation")
+
+  @@map("teachers")
 }
 
 model Subject {
@@ -57,6 +59,8 @@ model Subject {
   groupId         String?
   dayScheduleId   String?
   ScheduleSubject ScheduleSubject[]
+
+  @@map("subjects")
 }
 
 model TeacherSubject {
@@ -86,16 +90,20 @@ model ScheduleSubject {
   id            String       @id @default(uuid())
   roomNumber    String
   orderNumber   Int
-  subject       Subject?     @relation(fields: [subjectId], references: [id])
+  subject       Subject?     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   subjectId     String?
   DaySchedule   DaySchedule? @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
   dayScheduleId String?
+
+  @@map("scheduleSubject")
 }
 
 model DaySchedule {
   id               String            @id @default(uuid())
   dayOfWeek        String
-  Group            Group?            @relation(fields: [groupId], references: [id])
+  Group            Group?            @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId          String
   scheduleSubjects ScheduleSubject[]
+
+  @@map("daySchedule")
 }

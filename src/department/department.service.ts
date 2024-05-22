@@ -6,7 +6,9 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-  
+import { DaySchedule } from '@prisma/client';
+import * as Excel from 'exceljs';
+
 @Injectable()
 export class DepartmentService {
   constructor(private prisma: PrismaService) {}

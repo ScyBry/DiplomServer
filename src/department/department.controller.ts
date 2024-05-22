@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   Query,
+  Res,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';

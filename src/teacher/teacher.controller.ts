@@ -11,6 +11,7 @@ import {
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { TeacherService } from './teacher.service';
+import { Teacher } from '@prisma/client';
 
 @Controller('teacher')
 export class TeacherController {
@@ -38,9 +39,9 @@ export class TeacherController {
 
   @Post('assignSubjectsToTeacher')
   assignSubjectToTeacher(
-    @Query('teacherId') teacherId: string,
+    @Body() teachers: string[],
     @Query('subjectId') subjectId: string,
   ) {
-    return this.teacherService.assignSubjectsToTeacher(teacherId, subjectId);
+    return this.teacherService.assignSubjectsToTeacher(teachers, subjectId);
   }
 }

@@ -25,11 +25,6 @@ export class SubjectController {
     return this.subjectService.getAllGroupSubjects(groupId);
   }
 
-  // @Get('getAllSubjects')
-  // getAllSubjects() {
-  //   return this.subjectService.getAllSubjects();
-  // }
-
   @Delete('deleteSubject')
   deleteSubject(@Query('id') id: string) {
     return this.subjectService.deleteSubject(id);

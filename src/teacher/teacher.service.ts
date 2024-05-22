@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -6,6 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { Teacher } from '@prisma/client';
 
 @Injectable()
 export class TeacherService {
@@ -73,30 +75,49 @@ export class TeacherService {
     });
   }
 
-  async assignSubjectsToTeacher(teacherId: string, subjectId: string) {
-    const isTeacherExists = await this.prisma.teacher.findFirst({
-      where: { id: teacherId },
-    });
-
-    const isSubjectExists = await this.prisma.subject.findFirst({
-      where: { id: subjectId },
-    });
-
-    if (!isTeacherExists || !isSubjectExists)
-      throw new NotFoundException('Преподаватель или предмет не найден');
-
-    this.prisma.teacherSubject.deleteMany({
+  async assignSubjectsToTeacher(teachers: string[], subjectId: string) {
+    const deletedSubjects = await this.prisma.teacherSubject.deleteMany({
       where: {
         subjectId,
       },
     });
 
-    return this.prisma.teacherSubject.create({
-      data: {
-        teacherId,
-        subjectId,
-      },
-    });
+    if (!deletedSubjects) throw new BadRequestException('Что-то пошло не так');
+
+    return await Promise.all(
+      teachers.teachers.map((teacher) =>
+        this.prisma.teacherSubject.create({
+          data: {
+            teacher: { connect: { id: teacher.id } },
+            subject: { connect: { id: subjectId } },
+          },
+        }),
+      ),
+    );
+
+    // const isTeacherExists = await this.prisma.teacher.findFirst({
+    //   where: { id: teacherId },
+    // });
+
+    // const isSubjectExists = await this.prisma.subject.findFirst({
+    //   where: { id: subjectId },
+    // });
+
+    // if (!isTeacherExists || !isSubjectExists)
+    //   throw new NotFoundException('Преподаватель или предмет не найден');
+
+    // this.prisma.teacherSubject.deleteMany({
+    //   where: {
+    //     subjectId,
+    //   },
+    // });
+
+    // return this.prisma.teacherSubject.create({
+    //   data: {
+    //     teacherId,
+    //     subjectId,
+    //   },
+    // });
   }
 
   async getSubjectByTeacher(teacherId: string) {

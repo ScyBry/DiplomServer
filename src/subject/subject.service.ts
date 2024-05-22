@@ -25,7 +25,31 @@ export class SubjectService {
       throw new ConflictException('Предмет с таким названием уже добавлен');
 
     return this.prisma.subject.create({
-      data: createSubjectDto,
+      data: {
+        name: createSubjectDto.name,
+        hoursPerGroup: createSubjectDto.hoursPerGroup,
+        Group: {
+          connect: {
+            id: createSubjectDto.groupId,
+          },
+        },
+      },
+    });
+  }
+
+  async updateSubject(id: string, updateSubjectDto: UpdateSubjectDto) {
+    const subject = await this.prisma.subject.findFirst({
+      where: { id },
+    });
+
+    if (!subject) throw new NotFoundException('Предмет не найден');
+
+    return await this.prisma.subject.update({
+      where: { id: id },
+      data: {
+        name: updateSubjectDto.name,
+        hoursPerGroup: updateSubjectDto.hoursPerGroup,
+      },
     });
   }
 
@@ -72,16 +96,6 @@ export class SubjectService {
   async findSubjectById(id: string) {
     return this.prisma.subject.findUnique({
       where: { id },
-    });
-  }
-
-  async updateSubject(
-    id: string,
-    updateSubjectDto: UpdateSubjectDto,
-  ): Promise<any> {
-    return this.prisma.subject.update({
-      where: { id },
-      data: updateSubjectDto,
     });
   }
 
