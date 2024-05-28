@@ -56,7 +56,7 @@ export class SubjectService {
   async getAllGroupSubjects(id: string) {
     const subjects = await this.prisma.subject.findMany({
       where: { groupId: id },
-      include: { teachers: true },
+      include: { teachers: true, Group: true },
     });
 
     const teacherIds = new Set<string>();

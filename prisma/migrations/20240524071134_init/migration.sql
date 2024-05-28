@@ -113,7 +113,7 @@ ALTER TABLE "TeacherSubject" ADD CONSTRAINT "TeacherSubject_subjectId_fkey" FORE
 ALTER TABLE "groups" ADD CONSTRAINT "groups_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "scheduleSubject" ADD CONSTRAINT "scheduleSubject_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "subjects"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "scheduleSubject" ADD CONSTRAINT "scheduleSubject_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "subjects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "scheduleSubject" ADD CONSTRAINT "scheduleSubject_dayScheduleId_fkey" FOREIGN KEY ("dayScheduleId") REFERENCES "daySchedule"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -26,15 +26,15 @@ export class ScheduleController {
     return this.scheduleService.saveDaySchedule(createScheduleDto);
   }
 
-  @Get('aboba')
-  async exportToExcel(@Res() res) {
+  @Get('exportExcel')
+  async exportToExcel(@Res() res, @Query('day') day: string) {
     try {
       res.set({
         'Content-Type':
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename=day-schedules.xlsx',
       });
-      const buffer = await this.scheduleService.exportToExcel();
+      const buffer = await this.scheduleService.exportToExcel(day);
       res.send(buffer);
     } catch (error) {
       console.error(error);
