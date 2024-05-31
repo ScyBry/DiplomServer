@@ -29,14 +29,12 @@ export class AuthController {
   @Post('signin')
   @UseGuards(LocalAuthGuard)
   signIn(@Request() req) {
-    console.log(req);
     return this.authService.login(req.user);
   }
 
   @Get('getProfile')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-    console.log('aoba');
     return req.user;
   }
 }

@@ -51,6 +51,7 @@ export class DepartmentService {
   }
 
   async update(id: string, updateDepartmentDto: UpdateDepartmentDto) {
+    console.log(updateDepartmentDto);
     const existingDepartment = await this.prisma.department.findUnique({
       where: { id },
     });

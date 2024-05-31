@@ -7,7 +7,7 @@ export interface IUser {
 export interface IScheduleSubject {
   orderNumber: number;
   subjectId: string;
-  roomNumber: string;
+  cabinets: string[];
 }
 
 export interface IScheduleDay {

@@ -8,6 +8,7 @@ import { TeacherModule } from './teacher/teacher.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { CabinetModule } from './cabinet/cabinet.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     UserModule,
     AuthModule,
     ScheduleModule,
+    CabinetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

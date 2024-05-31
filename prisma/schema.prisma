@@ -13,23 +13,32 @@ model User {
   email    String @unique
   password String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isBlocked Boolean  @default(false) @map("is_blocked")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  isBlocked   Boolean       @default(false) @map("is_blocked")
+  DaySchedule DaySchedule[]
 
   @@map("users")
 }
 
 model Department {
-  id     String  @id @default(uuid())
-  name   String  @unique
-  groups Group[]
+  id       String  @id @default(uuid())
+  name     String  @unique
+  location String
+  groups   Group[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("departments")
 }
+
+// model Cabinet {
+//   id              String            @id @default(uuid())
+//   roomNumber      String            @unique
+//   location        String
+//   ScheduleSubject ScheduleSubject[]
+// }
 
 model Teacher {
   id         String   @id @default(uuid())
@@ -86,24 +95,57 @@ model Group {
   @@map("groups")
 }
 
-model ScheduleSubject {
-  id            String       @id @default(uuid())
-  roomNumber    String
-  orderNumber   Int
-  subject       Subject?     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  subjectId     String?
-  DaySchedule   DaySchedule? @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
-  dayScheduleId String?
+// model ScheduleSubject {
+//   id            String       @id @default(uuid())
+//   Cabinet       Cabinet      @relation(fields: [cabinetId], references: [id])
+//   orderNumber   Int
+//   subject       Subject?     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+//   subjectId     String?
+//   DaySchedule   DaySchedule? @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
+//   dayScheduleId String?
+//   cabinetId     String
 
-  @@map("scheduleSubject")
+//   @@map("scheduleSubject")
+// }
+
+model ScheduleSubject {
+  id                     String                   @id @default(uuid())
+  orderNumber            Int
+  subject                Subject?                 @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId              String?
+  DaySchedule            DaySchedule?             @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
+  dayScheduleId          String?
+  ScheduleSubjectCabinet ScheduleSubjectCabinet[]
+
+  @@map("scheduleSubjects")
+}
+
+model Cabinet {
+  id               String                   @id @default(uuid())
+  roomNumber       String                   @unique
+  location         String
+  scheduleSubjects ScheduleSubjectCabinet[]
+
+  @@map("cabinets")
+}
+
+model ScheduleSubjectCabinet {
+  scheduleSubject   ScheduleSubject @relation(fields: [scheduleSubjectId], references: [id], onDelete: Cascade)
+  scheduleSubjectId String
+  cabinet           Cabinet         @relation(fields: [cabinetId], references: [id], onDelete: Cascade)
+  cabinetId         String
+
+  @@id([scheduleSubjectId, cabinetId])
 }
 
 model DaySchedule {
   id               String            @id @default(uuid())
   dayOfWeek        String
+  lastConfirmedBy  User              @relation(fields: [userId], references: [id])
   Group            Group?            @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId          String
   scheduleSubjects ScheduleSubject[]
+  userId           String
 
   @@map("daySchedule")
 }
