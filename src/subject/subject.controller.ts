@@ -21,8 +21,11 @@ export class SubjectController {
   }
 
   @Get('getAllGroupSubjects')
-  getAllGroupSubjects(@Query('id') groupId: string) {
-    return this.subjectService.getAllGroupSubjects(groupId);
+  getAllGroupSubjects(
+    @Query('id') groupId: string,
+    @Query('includeZeroHours') includeZeroHours: boolean,
+  ) {
+    return this.subjectService.getAllGroupSubjects(groupId, includeZeroHours);
   }
 
   @Delete('deleteSubject')

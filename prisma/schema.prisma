@@ -8,15 +8,14 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  email    String @unique
+  id       String  @id @default(uuid())
+  username String  @unique
+  email    String  @unique
   password String
+  isAdmin  Boolean
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  isBlocked   Boolean       @default(false) @map("is_blocked")
-  DaySchedule DaySchedule[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("users")
 }
@@ -32,13 +31,6 @@ model Department {
 
   @@map("departments")
 }
-
-// model Cabinet {
-//   id              String            @id @default(uuid())
-//   roomNumber      String            @unique
-//   location        String
-//   ScheduleSubject ScheduleSubject[]
-// }
 
 model Teacher {
   id         String   @id @default(uuid())
@@ -66,7 +58,6 @@ model Subject {
   teachers        TeacherSubject[]  @relation(name: "TeacherSubjectRelation")
   Group           Group?            @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId         String?
-  dayScheduleId   String?
   ScheduleSubject ScheduleSubject[]
 
   @@map("subjects")
@@ -94,19 +85,6 @@ model Group {
 
   @@map("groups")
 }
-
-// model ScheduleSubject {
-//   id            String       @id @default(uuid())
-//   Cabinet       Cabinet      @relation(fields: [cabinetId], references: [id])
-//   orderNumber   Int
-//   subject       Subject?     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-//   subjectId     String?
-//   DaySchedule   DaySchedule? @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
-//   dayScheduleId String?
-//   cabinetId     String
-
-//   @@map("scheduleSubject")
-// }
 
 model ScheduleSubject {
   id                     String                   @id @default(uuid())
@@ -141,11 +119,13 @@ model ScheduleSubjectCabinet {
 model DaySchedule {
   id               String            @id @default(uuid())
   dayOfWeek        String
-  lastConfirmedBy  User              @relation(fields: [userId], references: [id])
   Group            Group?            @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId          String
   scheduleSubjects ScheduleSubject[]
-  userId           String
+  lastConfirm      DateTime          @default(now()) @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
   @@map("daySchedule")
 }

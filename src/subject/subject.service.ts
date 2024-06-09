@@ -53,11 +53,20 @@ export class SubjectService {
     });
   }
 
-  async getAllGroupSubjects(id: string) {
-    const subjects = await this.prisma.subject.findMany({
-      where: { groupId: id },
-      include: { teachers: true, Group: true },
-    });
+  async getAllGroupSubjects(id: string, includeZeroHours: boolean) {
+    let subjects = [];
+
+    if (includeZeroHours) {
+      subjects = await this.prisma.subject.findMany({
+        where: { groupId: id },
+        include: { teachers: true, Group: true },
+      });
+    } else {
+      subjects = await this.prisma.subject.findMany({
+        where: { groupId: id, hoursPerGroup: { not: 0 } },
+        include: { teachers: true, Group: true },
+      });
+    }
 
     const teacherIds = new Set<string>();
 

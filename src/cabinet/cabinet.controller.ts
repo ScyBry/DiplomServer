@@ -14,7 +14,6 @@ import { CreateCabinetDto } from './dto/create-cabinet.dto';
 import { UpdateCabinetDto } from './dto/update-cabinet.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('cabinets')
 export class CabinetController {
   constructor(private readonly cabinetService: CabinetService) {}

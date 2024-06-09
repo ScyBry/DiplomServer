@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class CreateTeacherDto {
   @IsString({ message: 'Имя преподавателя должно быть строкой' })
@@ -14,5 +20,7 @@ export class CreateTeacherDto {
   surname: string;
 
   @IsNumber({}, { message: 'Общее количество часов должно быть числом' })
+  @IsPositive({ message: 'Кол-во часов не может быть меньше 0' })
+  @IsInt({ message: 'Кол-во часов должно быть целым числом' })
   totalHours: number;
 }

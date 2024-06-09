@@ -70,6 +70,10 @@ export class ScheduleService {
         }
       }
     }
+    await this.prisma.daySchedule.update({
+      where: { id: schedule.id },
+      data: { lastConfirm: new Date() },
+    });
   }
 
   async getGroupsSchedule(groupId: string) {
@@ -303,6 +307,8 @@ export class ScheduleService {
       },
     });
 
+    console.log(createScheduleDto);
+
     const filteredLessonItems = createScheduleDto.daySubjects.filter(
       (item) => item.subjectId !== '',
     );
@@ -318,7 +324,7 @@ export class ScheduleService {
         },
       });
 
-    if (isScheduleExists && filteredLessonItems.length !== 0) {
+    if (isScheduleExists) {
       await this.prisma.scheduleSubject.deleteMany({
         where: {
           DaySchedule: { id: isScheduleExists.id },
@@ -365,6 +371,11 @@ export class ScheduleService {
         DaySchedule: { id: isScheduleExists.id },
       },
       include: {
+        subject: {
+          include: {
+            teachers: true,
+          },
+        },
         DaySchedule: true,
         ScheduleSubjectCabinet: {
           include: {
@@ -383,15 +394,32 @@ export class ScheduleService {
               { DaySchedule: { dayOfWeek: subject.DaySchedule.dayOfWeek } },
               { orderNumber: subject.orderNumber },
               {
-                ScheduleSubjectCabinet: {
-                  some: {
-                    cabinetId: {
-                      in: subject.ScheduleSubjectCabinet.map(
-                        (cabinet) => cabinet.cabinetId,
-                      ),
+                OR: [
+                  {
+                    ScheduleSubjectCabinet: {
+                      some: {
+                        cabinetId: {
+                          in: subject.ScheduleSubjectCabinet.map(
+                            (cabinet) => cabinet.cabinetId,
+                          ),
+                        },
+                      },
                     },
                   },
-                },
+                  {
+                    subject: {
+                      teachers: {
+                        some: {
+                          teacherId: {
+                            in: subject.subject.teachers.map(
+                              (teacher) => teacher.teacherId,
+                            ),
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
               },
             ],
           },

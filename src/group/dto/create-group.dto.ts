@@ -6,5 +6,6 @@ export class CreateGroupDto {
   name: string;
 
   @IsNotEmpty({ message: 'ID отделения не должно быть пустым' })
+  @IsString({ message: 'Id отделения должен быть строкой' })
   departmentId: string;
 }

@@ -56,9 +56,6 @@ export class TeacherService {
   }
 
   async updateTeacher(id: string, updateTeacherDto: UpdateTeacherDto) {
-    console.log(id);
-    console.log(updateTeacherDto);
-
     const teacher = await this.prisma.teacher.findFirst({
       where: { id },
     });

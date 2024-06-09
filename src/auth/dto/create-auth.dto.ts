@@ -1,4 +1,10 @@
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterUserDto {
   @IsEmail()
@@ -22,6 +28,8 @@ export class RegisterUserDto {
   @MinLength(6, { message: 'Пароль должен быть миниум 6 символов' })
   @MaxLength(100, { message: 'Пароль может быть максиум 100 символов' })
   repeatPassword: string;
+
+  isAdmin?: boolean;
 }
 
 export class LoginUserDto {
