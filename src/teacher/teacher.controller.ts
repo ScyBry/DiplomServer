@@ -39,7 +39,7 @@ export class TeacherController {
 
   @Post('assignSubjectsToTeacher')
   assignSubjectToTeacher(
-    @Body() teachers: string[],
+    @Body() teachers: { teachers: any[] },
     @Query('subjectId') subjectId: string,
   ) {
     return this.teacherService.assignSubjectsToTeacher(teachers, subjectId);

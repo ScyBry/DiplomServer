@@ -9,9 +9,11 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { CabinetModule } from './cabinet/cabinet.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
+    PrismaModule,
     DepartmentModule,
     GroupModule,
     SubjectModule,

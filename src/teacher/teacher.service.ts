@@ -74,7 +74,10 @@ export class TeacherService {
     });
   }
 
-  async assignSubjectsToTeacher(teachers: string[], subjectId: string) {
+  async assignSubjectsToTeacher(
+    teachers: { teachers: any[] },
+    subjectId: string,
+  ) {
     const deletedSubjects = await this.prisma.teacherSubject.deleteMany({
       where: {
         subjectId,
