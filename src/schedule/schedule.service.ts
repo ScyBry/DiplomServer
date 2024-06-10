@@ -75,6 +75,35 @@ export class ScheduleService {
     });
   }
 
+  async getGroupsSchedule(groupId: string) {
+    const isGroupExists = await this.prisma.group.findFirst({
+      where: { id: groupId },
+    });
+
+    if (!isGroupExists) throw new NotFoundException('Группа не найдена...');
+
+    return this.prisma.daySchedule.findMany({
+      where: {
+        groupId,
+      },
+      include: {
+        Group: true,
+        scheduleSubjects: {
+          orderBy: {
+            orderNumber: 'asc',
+          },
+          include: {
+            ScheduleSubjectCabinet: {
+              include: {
+                cabinet: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async exportToExcel(day: string, location: string) {
     console.log(day, location);
     const data = await this.prisma.department.findMany({
