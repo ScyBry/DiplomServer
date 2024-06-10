@@ -8,75 +8,7 @@ import { User } from '@prisma/client';
 export class ScheduleService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // async confirmSchedule(id: string) {
-  //   const schedule = await this.prisma.daySchedule.findFirst({
-  //     where: { id },
-  //     include: {
-  //       scheduleSubjects: {
-  //         include: {
-  //           subject: true,
-  //           ScheduleSubjectCabinet: {
-  //             include: {
-  //               cabinet: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   });
-  //
-  //   if (!schedule) {
-  //     throw new Error(`DaySchedule with id ${id} not found`);
-  //   }
-  //
-  //   // Iterate through each scheduleSubject in the DaySchedule
-  //   for (const scheduleSubject of schedule.scheduleSubjects) {
-  //     // Check if the subject is associated with the scheduleSubject
-  //     if (scheduleSubject.subject) {
-  //       // Fetch the current hoursPerGroup for the subject
-  //       const subject = await this.prisma.subject.findUnique({
-  //         where: { id: scheduleSubject.subjectId },
-  //         select: { hoursPerGroup: true },
-  //       });
-  //
-  //       // Decrement the hoursPerGroup of the subject if it's greater than zero
-  //       if (subject && subject.hoursPerGroup > 0) {
-  //         await this.prisma.subject.update({
-  //           where: { id: scheduleSubject.subjectId },
-  //           data: { hoursPerGroup: { decrement: 1 } },
-  //         });
-  //       }
-  //     }
-  //
-  //     // Fetch the teacherSubject relation for the subject
-  //     const teacherSubjects = await this.prisma.teacherSubject.findMany({
-  //       where: { subjectId: scheduleSubject.subjectId },
-  //     });
-  //
-  //     for (const teacherSubject of teacherSubjects) {
-  //       // Fetch the current totalHours for the teacher
-  //       const teacher = await this.prisma.teacher.findUnique({
-  //         where: { id: teacherSubject.teacherId },
-  //         select: { totalHours: true },
-  //       });
-  //
-  //       // Decrement the totalHours of the teacher if it's greater than zero
-  //       if (teacher && teacher.totalHours > 0) {
-  //         await this.prisma.teacher.update({
-  //           where: { id: teacherSubject.teacherId },
-  //           data: { totalHours: { decrement: 1 } },
-  //         });
-  //       }
-  //     }
-  //   }
-  //   await this.prisma.daySchedule.update({
-  //     where: { id: schedule.id },
-  //     data: { lastConfirm: new Date() },
-  //   });
-  // }
-
   async confirmSchedule(id: string) {
-    // Fetch the schedule with all related data in one query
     const schedule = await this.prisma.daySchedule.findFirst({
       where: { id },
       include: {
@@ -97,76 +29,49 @@ export class ScheduleService {
       throw new Error(`DaySchedule with id ${id} not found`);
     }
 
-    // Prepare updates for subjects and teachers in one transaction
-    const updates = [];
-
+    // Iterate through each scheduleSubject in the DaySchedule
     for (const scheduleSubject of schedule.scheduleSubjects) {
-      if (
-        scheduleSubject.subject &&
-        scheduleSubject.subject.hoursPerGroup > 0
-      ) {
-        updates.push(
-          this.prisma.subject.update({
+      // Check if the subject is associated with the scheduleSubject
+      if (scheduleSubject.subject) {
+        // Fetch the current hoursPerGroup for the subject
+        const subject = await this.prisma.subject.findUnique({
+          where: { id: scheduleSubject.subjectId },
+          select: { hoursPerGroup: true },
+        });
+
+        // Decrement the hoursPerGroup of the subject if it's greater than zero
+        if (subject && subject.hoursPerGroup > 0) {
+          await this.prisma.subject.update({
             where: { id: scheduleSubject.subjectId },
             data: { hoursPerGroup: { decrement: 1 } },
-          }),
-        );
+          });
+        }
       }
 
+      // Fetch the teacherSubject relation for the subject
       const teacherSubjects = await this.prisma.teacherSubject.findMany({
         where: { subjectId: scheduleSubject.subjectId },
       });
 
       for (const teacherSubject of teacherSubjects) {
-        if (teacherSubject.teacher.totalHours > 0) {
-          updates.push(
-            this.prisma.teacher.update({
-              where: { id: teacherSubject.teacherId },
-              data: { totalHours: { decrement: 1 } },
-            }),
-          );
+        // Fetch the current totalHours for the teacher
+        const teacher = await this.prisma.teacher.findUnique({
+          where: { id: teacherSubject.teacherId },
+          select: { totalHours: true },
+        });
+
+        // Decrement the totalHours of the teacher if it's greater than zero
+        if (teacher && teacher.totalHours > 0) {
+          await this.prisma.teacher.update({
+            where: { id: teacherSubject.teacherId },
+            data: { totalHours: { decrement: 1 } },
+          });
         }
       }
     }
-
-    // Update the day schedule last confirm date
-    updates.push(
-      this.prisma.daySchedule.update({
-        where: { id: schedule.id },
-        data: { lastConfirm: new Date() },
-      }),
-    );
-
-    // Execute all updates in one transaction
-    await this.prisma.$transaction(updates);
-  }
-
-  async getGroupsSchedule(groupId: string) {
-    const isGroupExists = await this.prisma.group.findFirst({
-      where: { id: groupId },
-    });
-
-    if (!isGroupExists) throw new NotFoundException('Группа не найдена...');
-
-    return this.prisma.daySchedule.findMany({
-      where: {
-        groupId,
-      },
-      include: {
-        Group: true,
-        scheduleSubjects: {
-          orderBy: {
-            orderNumber: 'asc',
-          },
-          include: {
-            ScheduleSubjectCabinet: {
-              include: {
-                cabinet: true,
-              },
-            },
-          },
-        },
-      },
+    await this.prisma.daySchedule.update({
+      where: { id: schedule.id },
+      data: { lastConfirm: new Date() },
     });
   }
 
