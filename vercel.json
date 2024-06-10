@@ -13,11 +13,11 @@
       "methods": [
         "GET",
         "POST",
-        "PATCH",
         "PUT",
-        "DELETE"
+        "DELETE",
+        "PATCH",
+        "OPTIONS"
       ]
     }
   ]
-
 }
