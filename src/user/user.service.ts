@@ -68,7 +68,7 @@ export class UserService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({ where: { isAdmin: false } });
   }
 
   async delete(id: string) {
